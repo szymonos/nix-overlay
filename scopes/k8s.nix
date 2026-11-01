@@ -1,0 +1,1 @@
+../k8s/scopes/k8s.nix

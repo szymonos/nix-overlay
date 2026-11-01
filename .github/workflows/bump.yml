@@ -16,7 +16,7 @@ jobs:
       - name: Bump
         env:
           GH_TOKEN: ${{ github.token }}
-        run: scripts/bump-release.sh scopes/sofka.nix nklmilojevic/sofka
+        run: scripts/bump-release.sh k8s/scopes/sofka.nix nklmilojevic/sofka
       - name: Commit
         run: |
           git diff --quiet && exit 0
