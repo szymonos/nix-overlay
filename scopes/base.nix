@@ -1,1 +1,0 @@
-../base/scopes/base.nix

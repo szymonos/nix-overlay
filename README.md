@@ -1,44 +1,44 @@
 # nix-overlay
 
-My [Envy-NX](https://github.com/szymonos/envy-nx) overlay catalog: one folder per group, and the repository
-root installs every group at once.
+My [Envy-NX](https://github.com/szymonos/envy-nx) overlays. Each folder under `overlays/` is one overlay, picked
+by name.
 
-| Folder   | `# scopes:` header             | Extra                                                         |
-| -------- | ------------------------------ | ------------------------------------------------------------- |
-| `base/`  | `shell pwsh oh_my_posh`        |                                                               |
-| `k8s/`   | `docker k8s_base k8s_dev`      | [sofka](https://github.com/nklmilojevic/sofka) from release binaries |
-| `cloud/` | `az gcloud` (az brings python) |                                                               |
-| `dev/`   | `python nodejs bun`            |                                                               |
-| root     | everything above               | `scopes/` holds symlinks to every group's scope files         |
-
-`docker` follows the OS: colima and the docker CLI on macOS; on Linux and WSL it only verifies docker-ce,
-which needs root (`wsl/wsl_setup.ps1 -Scope docker`).
+| Overlay | Installs                                                               |
+| ------- | ---------------------------------------------------------------------- |
+| `base`  | `shell`, `pwsh`, `oh_my_posh`                                          |
+| `k8s`   | `docker`, `k8s_base`, `k8s_dev`, and sofka from its release binaries   |
+| `cloud` | `az` (brings `python`), `gcloud`                                       |
+| `dev`   | `python`, `nodejs`, `bun`                                              |
 
 ## Use it
 
-Envy-NX 1.33.0 or later:
-
 ```bash
-nx overlay add github:szymonos/nix-overlay              # every group
-nx overlay add github:szymonos/nix-overlay --dir k8s    # one group
-nx overlay                                              # what is subscribed
+nx overlay browse github:szymonos/nix-overlay            # what is here, installs nothing
+nx overlay add github:szymonos/nix-overlay k8s cloud     # the overlays you name
+nx overlay add github:szymonos/nix-overlay               # pick from a list
+nx overlay add github:szymonos/nix-overlay --all         # all of them
+nix/setup.sh --overlay github:szymonos/nix-overlay#k8s   # during first setup
 ```
 
-A subscription with no `--dir` reads only the root `scopes/`, so a new group is added to the root by linking
-its scope files there:
+## Layout
 
-```bash
-ln -s ../<group>/scopes/<file>.nix scopes/<file>.nix
+```text
+overlays/<name>/
+├── README.md        # first line: the description `browse` and the picker show
+└── scopes/*.nix     # each file a scope; a `# scopes:` header names standard scopes
+lib/                 # shared files, linked or imported from overlays
+scripts/, .github/   # repository tooling, never installed
 ```
 
-Keep scope file names unique across groups: the root holds them all in one folder.
+`overlays/k8s/scopes/sofka.nix` is a symlink to `lib/sofka.nix`. Link the same file from another overlay to
+share it.
 
 ## Keeping tools current
 
 `scripts/bump-release.sh <file> <owner>/<repo>` points a release-binary scope at the latest release, taking
 the version and per-platform hashes from the release's `SHA256SUMS`. `.github/workflows/bump.yml` runs it
-daily and commits the change. For a new release-binary tool, copy `k8s/scopes/sofka.nix`, change the URL and
-triples, and add a line to the workflow.
+daily and commits the change. For a new tool, copy `lib/sofka.nix`, change the URL and triples, link it from
+an overlay, and add a line to the workflow.
 
 Anything here runs on every subscribed machine on its next setup, including whatever an upstream release
 ships after an automatic bump.

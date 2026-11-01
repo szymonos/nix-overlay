@@ -1,1 +1,0 @@
-../cloud/scopes/cloud.nix
