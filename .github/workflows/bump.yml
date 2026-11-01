@@ -1,0 +1,26 @@
+name: bump release binaries
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/bump-release.sh scopes/sofka.nix nklmilojevic/sofka
+      - name: Commit
+        run: |
+          git diff --quiet && exit 0
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -am "chore: bump release binaries"
+          git push
