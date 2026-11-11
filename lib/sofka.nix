@@ -3,12 +3,12 @@
 # bins: sofka
 { pkgs }:
 let
-  version = "0.34.0";
+  version = "0.35.1";
   targets = {
-    x86_64-linux = { triple = "x86_64-unknown-linux-musl"; sha256 = "034a3f7f170921621613ec01d016967ff8f35b9c42e88c8af2095c1815a117ad"; };
-    aarch64-linux = { triple = "aarch64-unknown-linux-musl"; sha256 = "0b2c9f7e7a4d82fcab4b26f3be5c8f1b5c48cbdf5a9b965ee0a00f0e24af6756"; };
-    x86_64-darwin = { triple = "x86_64-apple-darwin"; sha256 = "137323c5501dd5b89a361c073a258c979515dc13392b72b5112b7e34bc740204"; };
-    aarch64-darwin = { triple = "aarch64-apple-darwin"; sha256 = "dff9ee7d16757f6b0c83a788e750aeeeff49518b3dde4370266ca337fde4eed1"; };
+    x86_64-linux = { triple = "x86_64-unknown-linux-musl"; sha256 = "f22e292535f11c0ec9f01dc7b28a9dd2ce11495941d8e014a129c2343c218660"; };
+    aarch64-linux = { triple = "aarch64-unknown-linux-musl"; sha256 = "1e229eccd71bc7b545b449e134d6ed76348692299c23414b949eb6e98541ffe6"; };
+    x86_64-darwin = { triple = "x86_64-apple-darwin"; sha256 = "1e0776eb5cd38dc9b24d1cdf6502eb90be7179f813fe3ac80d7528e393c5ff5a"; };
+    aarch64-darwin = { triple = "aarch64-apple-darwin"; sha256 = "6b51127bb918b32d6abc9aed940c2ffcf99e595c173fd48f432ec3591647c5c1"; };
   };
   t = targets.${pkgs.stdenv.hostPlatform.system};
 in
